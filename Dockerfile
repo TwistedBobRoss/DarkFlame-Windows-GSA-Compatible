@@ -4,7 +4,7 @@ FROM mcr.microsoft.com/windows/servercore:${WINDOWS_TAG}
 
 SHELL ["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command"]
 
-ARG DARKFLAME_RELEASE_URL=https://github.com/DarkflameUniverse/DarkflameServer/releases/latest/download/darkflameserver-windows.zip
+ARG DARKFLAME_RELEASE_URL=https://github.com/DarkflameUniverse/DarkflameServer/releases/latest/download/darkflame-universe-windows.zip
 ENV DARKFLAME_RELEASE_URL=${DARKFLAME_RELEASE_URL}
 ENV DFU_HOME=C:\darkflame
 ENV DFU_RELEASE_DIR=C:\darkflame\release
