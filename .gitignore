@@ -1,0 +1,11 @@
+.vs/
+.idea/
+*.user
+*.log
+*.tmp
+*.zip
+client/
+configs/
+resServer/
+logs/
+dump/

@@ -1,0 +1,160 @@
+{
+  "_version": 3,
+  "type": "custom",
+  "docker": {
+    "ports": {
+      "game": {
+        "port": "1001",
+        "multiplier": "1"
+      },
+      "raw": {
+        "port": "2005",
+        "multiplier": "1"
+      },
+      "query": {
+        "port": "3000-3300",
+        "multiplier": "1"
+      }
+    },
+    "image": {
+      "name": "ghcr.io/twistedbobross/darkflame-windows-gsa-compatible",
+      "tag": "server-2022"
+    },
+    "automatic_ports": false,
+    "envs": {
+      "CLIENT_LOCATION": "C:\\darkflame\\client",
+      "DLU_CONFIG_DIR": "C:\\darkflame\\configs",
+      "DUMP_FOLDER": "C:\\darkflame\\dump",
+      "DATABASE_TYPE": "{config_parameter id=\"database_type\"}",
+      "SQLITE_DATABASE_PATH": "C:\\darkflame\\resServer\\dlu.sqlite",
+      "EXTERNAL_IP": "{config_parameter id=\"external_ip\"}",
+      "CLIENT_NET_VERSION": "{config_parameter id=\"client_net_version\"}",
+      "SKIP_ACCOUNT_CREATION": "{config_parameter id=\"skip_account_creation\"}",
+      "LOG_TO_CONSOLE": "{config_parameter id=\"log_to_console\"}",
+      "MAX_CLIENTS": "{gameserver.slot_limit}"
+    },
+    "mounts": {
+      "{container.home_root}/client": "C:/darkflame/client",
+      "{container.home_root}/configs": "C:/darkflame/configs",
+      "{container.home_root}/resServer": "C:/darkflame/resServer",
+      "{container.home_root}/logs": "C:/darkflame/logs",
+      "{container.home_root}/dump": "C:/darkflame/dump"
+    }
+  },
+  "dir": {
+    "Darkflame Client": {
+      "path": "\\client",
+      "create": true,
+      "type": "normal"
+    },
+    "Darkflame Configs": {
+      "path": "\\configs",
+      "create": true,
+      "type": "normal"
+    },
+    "Darkflame Server Data": {
+      "path": "\\resServer",
+      "create": true,
+      "type": "normal"
+    },
+    "Darkflame Logs": {
+      "path": "\\logs",
+      "create": true,
+      "type": "logs"
+    },
+    "Darkflame Dumps": {
+      "path": "\\dump",
+      "create": true,
+      "type": "logs"
+    }
+  },
+  "game": {
+    "server": {
+      "wipe": [
+        "\\resServer",
+        "\\logs",
+        "\\dump"
+      ],
+      "backup": {
+        "configs": "\\configs",
+        "resServer": "\\resServer"
+      },
+      "monitoring": {
+        "type": "container",
+        "recovery_mode": true
+      }
+    },
+    "type": "custom",
+    "config": {
+      "files": {
+        "sharedconfig.ini": {
+          "path": "\\configs\\sharedconfig.ini",
+          "info": "Main shared Darkflame Universe settings. The container writes the GSA environment values into this file at startup.",
+          "disable_edit": "0",
+          "content": "# Darkflame Universe shared config managed by the GSA wrapper.\nlog_to_console={config_parameter id=\"log_to_console\"}\nlog_debug_statements=0\nexternal_ip={config_parameter id=\"external_ip\"}\ndont_generate_dcf=0\nmax_clients={gameserver.slot_limit}\ndump_folder=C:\\darkflame\\dump\nclient_location=C:\\darkflame\\client\nclient_net_version={config_parameter id=\"client_net_version\"}\nchat_server_port=2005\ndatabase_type={config_parameter id=\"database_type\"}\nsqlite_database_path=C:\\darkflame\\resServer\\dlu.sqlite\nskip_account_creation={config_parameter id=\"skip_account_creation\"}\n"
+        },
+        "authconfig.ini": {
+          "path": "\\configs\\authconfig.ini",
+          "info": "Authentication server config. Keep the default auth port unless you have also customized client-side connection behavior.",
+          "disable_edit": "0",
+          "content": "external_ip={config_parameter id=\"external_ip\"}\n"
+        },
+        "chatconfig.ini": {
+          "path": "\\configs\\chatconfig.ini",
+          "info": "Chat server config. The default chat port used by the wrapper is 2005/udp.",
+          "disable_edit": "0",
+          "content": "external_ip={config_parameter id=\"external_ip\"}\n"
+        },
+        "masterconfig.ini": {
+          "path": "\\configs\\masterconfig.ini",
+          "info": "Master server config. The wrapper runs MasterServer.exe and lets Darkflame spawn the child services.",
+          "disable_edit": "0",
+          "content": "external_ip={config_parameter id=\"external_ip\"}\n"
+        },
+        "worldconfig.ini": {
+          "path": "\\configs\\worldconfig.ini",
+          "info": "World server config. World instances use the fixed 3000-3300 UDP range by default.",
+          "disable_edit": "0",
+          "content": ""
+        }
+      },
+      "parameters": {
+        "external_ip": {
+          "name": "External IP",
+          "info": "Public IP advertised to LEGO Universe clients. Default uses the GameServerApp machine IP.",
+          "section": "Network",
+          "type": "text",
+          "content": "{machine.ip}"
+        },
+        "client_net_version": {
+          "name": "Client Net Version",
+          "info": "Use 171022 for the common LEGO Universe 1.10.64 client. Use 171023 only for a Darkflame Universe client build that expects it.",
+          "section": "Client",
+          "type": "array",
+          "dropdown": "{\"LEGO Universe 1.10.64\":\"171022\",\"Darkflame Universe Client\":\"171023\"}"
+        },
+        "database_type": {
+          "name": "Database Type",
+          "info": "SQLite keeps the GSA server self-contained. MariaDB requires a separate database service and matching MYSQL_* environment variables.",
+          "section": "Database",
+          "type": "array",
+          "dropdown": "{\"SQLite\":\"sqlite\",\"MariaDB\":\"mariadb\"}"
+        },
+        "skip_account_creation": {
+          "name": "Skip Interactive Account Check",
+          "info": "Keep enabled for non-interactive GameServerApp startup. Create the first admin account with Create-Admin.ps1.",
+          "section": "Accounts",
+          "type": "array",
+          "dropdown": "{\"Enabled\":\"1\",\"Disabled\":\"0\"}"
+        },
+        "log_to_console": {
+          "name": "Log To Console",
+          "info": "Mirrors Darkflame log output to the Docker log for GameServerApp.",
+          "section": "Logging",
+          "type": "array",
+          "dropdown": "{\"Enabled\":\"1\",\"Disabled\":\"0\"}"
+        }
+      }
+    }
+  }
+}

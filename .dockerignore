@@ -1,0 +1,11 @@
+.git
+.github
+blueprints
+docs
+*.md
+*.zip
+logs
+client
+configs
+resServer
+dump

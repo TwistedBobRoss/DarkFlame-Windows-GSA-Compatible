@@ -1,0 +1,36 @@
+name: Build Windows Image
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - Dockerfile
+      - Start-Darkflame.ps1
+      - Create-Admin.ps1
+      - .github/workflows/build-windows-image.yml
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-server-2022:
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        run: docker build --build-arg WINDOWS_TAG=ltsc2022 -t ghcr.io/twistedbobross/darkflame-windows-gsa-compatible:server-2022 .
+
+      - name: Push
+        run: docker push ghcr.io/twistedbobross/darkflame-windows-gsa-compatible:server-2022
