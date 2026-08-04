@@ -111,7 +111,15 @@ $resServerDir = Split-Path -Path $sqlitePath -Parent
 $externalIp = Get-EnvOrDefault -Name "EXTERNAL_IP" -Default "localhost"
 $clientNetVersion = Get-EnvOrDefault -Name "CLIENT_NET_VERSION" -Default "171022"
 $skipAccountCreation = Get-EnvOrDefault -Name "SKIP_ACCOUNT_CREATION" -Default "1"
+$authServerPort = Get-EnvOrDefault -Name "AUTH_SERVER_PORT" -Default "1001"
 $chatServerPort = Get-EnvOrDefault -Name "CHAT_SERVER_PORT" -Default "2005"
+$worldPortStart = Get-EnvOrDefault -Name "WORLD_PORT_START" -Default "3000"
+$masterIp = Get-EnvOrDefault -Name "MASTER_IP" -Default "localhost"
+$masterServerPort = Get-EnvOrDefault -Name "MASTER_SERVER_PORT" -Default "2000"
+$prestartServers = Get-EnvOrDefault -Name "PRESTART_SERVERS" -Default "1"
+$dontUseKeys = Get-EnvOrDefault -Name "DONT_USE_KEYS" -Default "1"
+$rewardCodes = Get-EnvOrDefault -Name "REWARDCODES" -Default "4,30"
+$chatWebServerEnabled = Get-EnvOrDefault -Name "CHAT_WEB_SERVER_ENABLED" -Default "0"
 $maxClients = Get-EnvOrDefault -Name "MAX_CLIENTS" -Default "999"
 
 foreach ($dir in @($configDir, $clientDir, $dumpDir, $logsDir, $resServerDir)) {
@@ -161,11 +169,14 @@ Set-IniValue -Path $sharedConfig -Key "client_net_version" -Value $clientNetVers
 Set-IniValue -Path $sharedConfig -Key "chat_server_port" -Value $chatServerPort
 Set-IniValue -Path $sharedConfig -Key "database_type" -Value $databaseType
 Set-IniValue -Path $sharedConfig -Key "skip_account_creation" -Value $skipAccountCreation
-Set-IniValue -Path $masterConfig -Key "master_ip" -Value (Get-EnvOrDefault -Name "MASTER_IP" -Default "localhost")
-Set-IniValue -Path $masterConfig -Key "master_server_port" -Value (Get-EnvOrDefault -Name "MASTER_SERVER_PORT" -Default "2000")
-Set-IniValue -Path $masterConfig -Key "world_port_start" -Value (Get-EnvOrDefault -Name "WORLD_PORT_START" -Default "3000")
-Set-IniValue -Path $masterConfig -Key "prestart_servers" -Value (Get-EnvOrDefault -Name "PRESTART_SERVERS" -Default "1")
-Set-IniValue -Path $authConfig -Key "auth_server_port" -Value (Get-EnvOrDefault -Name "AUTH_SERVER_PORT" -Default "1001")
+Set-IniValue -Path $masterConfig -Key "master_ip" -Value $masterIp
+Set-IniValue -Path $masterConfig -Key "master_server_port" -Value $masterServerPort
+Set-IniValue -Path $masterConfig -Key "world_port_start" -Value $worldPortStart
+Set-IniValue -Path $masterConfig -Key "prestart_servers" -Value $prestartServers
+Set-IniValue -Path $authConfig -Key "auth_server_port" -Value $authServerPort
+Set-IniValue -Path $authConfig -Key "dont_use_keys" -Value $dontUseKeys
+Set-IniValue -Path $authConfig -Key "rewardcodes" -Value $rewardCodes
+Set-IniValue -Path $chatConfig -Key "web_server_enabled" -Value $chatWebServerEnabled
 Set-IniValue -Path $chatConfig -Key "web_server_listen_port" -Value $chatServerPort
 
 if ($databaseType -match "^(sqlite)$") {
@@ -193,12 +204,23 @@ $env:EXTERNAL_IP = $externalIp
 $env:CLIENT_NET_VERSION = $clientNetVersion
 $env:SKIP_ACCOUNT_CREATION = $skipAccountCreation
 $env:LOG_TO_CONSOLE = Get-EnvOrDefault -Name "LOG_TO_CONSOLE" -Default "1"
+$env:AUTH_SERVER_PORT = $authServerPort
+$env:CHAT_SERVER_PORT = $chatServerPort
+$env:WORLD_PORT_START = $worldPortStart
+$env:MASTER_IP = $masterIp
+$env:MASTER_SERVER_PORT = $masterServerPort
+$env:PRESTART_SERVERS = $prestartServers
+$env:DONT_USE_KEYS = $dontUseKeys
+$env:REWARDCODES = $rewardCodes
+$env:CHAT_WEB_SERVER_ENABLED = $chatWebServerEnabled
+$env:MAX_CLIENTS = $maxClients
 
 Write-Host "Starting Darkflame Universe from $serverDir"
 Write-Host "Config directory: $configDir"
 Write-Host "Client directory: $clientDir"
 Write-Host "External IP: $externalIp"
 Write-Host "Database type: $databaseType"
+Write-Host "Auth port: $authServerPort; chat port: $chatServerPort; world port start: $worldPortStart"
 
 Push-Location $serverDir
 try {
