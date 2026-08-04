@@ -17,11 +17,11 @@ Docker image:
 If you only build one image, use that exact tag instead, for example `server-2022`.
 
 Ports:
-- `1001/udp` to `1001/udp` - auth/login
-- `2005/udp` to `2005/udp` - chat server port used by the default config
-- `3000-3300/udp` to `3000-3300/udp` - world instances
+- `game` base `1001/udp` - auth/login, exposed to the container as `{gameserver.game_port}`
+- `raw` base `2005/udp` - chat server port, exposed to the container as `{gameserver.raw_port}`
+- `query` base `3000/udp` - world port start, exposed to the container as `{gameserver.query_port}`
 
-Darkflame uses fixed LEGO Universe ports. Plan on one Darkflame Universe server per public IP unless you customize the client and server config.
+The blueprint enables `automatic_ports` so GSA controls port assignment. Darkflame increments world ports from `world_port_start`; this blueprint maps the startup world port for GSA compatibility.
 
 Mounts:
 - Host: `{container.home_root}/client`
@@ -46,8 +46,31 @@ Environment variables:
 - `CLIENT_NET_VERSION=171022`
 - `SKIP_ACCOUNT_CREATION=1`
 - `LOG_TO_CONSOLE=1`
+- `AUTH_SERVER_PORT={gameserver.game_port}`
+- `CHAT_SERVER_PORT={gameserver.raw_port}`
+- `WORLD_PORT_START={gameserver.query_port}`
+- `MASTER_IP=localhost`
+- `MASTER_SERVER_PORT=2000`
+- `PRESTART_SERVERS=1`
+- `DONT_USE_KEYS=1`
+- `REWARDCODES=4,30`
+- `CHAT_WEB_SERVER_ENABLED=0`
 
 Use `CLIENT_NET_VERSION=171023` only if your client is the Darkflame Universe client build that expects that network version.
+
+GSA configuration fields:
+- `External IP` -> `sharedconfig.ini external_ip`, `authconfig.ini external_ip`, `chatconfig.ini external_ip`, and `masterconfig.ini external_ip`
+- `Client Net Version` -> `sharedconfig.ini client_net_version`
+- `Database Type` -> `sharedconfig.ini database_type`
+- `Skip Interactive Account Check` -> `sharedconfig.ini skip_account_creation`
+- `Log To Console` -> `sharedconfig.ini log_to_console`
+- `Master IP` -> `masterconfig.ini master_ip`
+- `Master Server Port` -> `masterconfig.ini master_server_port`
+- `Prestart Servers` -> `masterconfig.ini prestart_servers`
+- `Ignore Play Keys` -> `authconfig.ini dont_use_keys`
+- `Default Reward Codes` -> `authconfig.ini rewardcodes`
+- `Chat Web Server` -> `chatconfig.ini web_server_enabled`
+- `MariaDB Host`, `MariaDB Database`, `MariaDB Username`, `MariaDB Password` -> `sharedconfig.ini mysql_*` when MariaDB is selected
 
 Directories:
 - `client`, path `\client`, create `Yes`
