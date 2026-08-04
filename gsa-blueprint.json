@@ -12,7 +12,7 @@
         "multiplier": "1"
       },
       "query": {
-        "port": "3000-3300",
+        "port": "3000",
         "multiplier": "1"
       }
     },
@@ -20,7 +20,7 @@
       "name": "ghcr.io/twistedbobross/darkflame-windows-gsa-compatible",
       "tag": "server-2022"
     },
-    "automatic_ports": false,
+    "automatic_ports": true,
     "envs": {
       "CLIENT_LOCATION": "C:\\darkflame\\client",
       "DLU_CONFIG_DIR": "C:\\darkflame\\configs",
@@ -31,6 +31,19 @@
       "CLIENT_NET_VERSION": "{config_parameter id=\"client_net_version\"}",
       "SKIP_ACCOUNT_CREATION": "{config_parameter id=\"skip_account_creation\"}",
       "LOG_TO_CONSOLE": "{config_parameter id=\"log_to_console\"}",
+      "AUTH_SERVER_PORT": "{gameserver.game_port}",
+      "CHAT_SERVER_PORT": "{gameserver.raw_port}",
+      "WORLD_PORT_START": "{gameserver.query_port}",
+      "MASTER_IP": "{config_parameter id=\"master_ip\"}",
+      "MASTER_SERVER_PORT": "{config_parameter id=\"master_server_port\"}",
+      "PRESTART_SERVERS": "{config_parameter id=\"prestart_servers\"}",
+      "DONT_USE_KEYS": "{config_parameter id=\"dont_use_keys\"}",
+      "REWARDCODES": "{config_parameter id=\"rewardcodes\"}",
+      "CHAT_WEB_SERVER_ENABLED": "{config_parameter id=\"chat_web_server_enabled\"}",
+      "MYSQL_HOST": "{config_parameter id=\"mysql_host\"}",
+      "MYSQL_DATABASE": "{config_parameter id=\"mysql_database\"}",
+      "MYSQL_USERNAME": "{config_parameter id=\"mysql_username\"}",
+      "MYSQL_PASSWORD": "{config_parameter id=\"mysql_password\"}",
       "MAX_CLIENTS": "{gameserver.slot_limit}"
     },
     "mounts": {
@@ -91,29 +104,29 @@
           "path": "\\configs\\sharedconfig.ini",
           "info": "Main shared Darkflame Universe settings. The container writes the GSA environment values into this file at startup.",
           "disable_edit": "0",
-          "content": "# Darkflame Universe shared config managed by the GSA wrapper.\nlog_to_console={config_parameter id=\"log_to_console\"}\nlog_debug_statements=0\nexternal_ip={config_parameter id=\"external_ip\"}\ndont_generate_dcf=0\nmax_clients={gameserver.slot_limit}\ndump_folder=C:\\darkflame\\dump\nclient_location=C:\\darkflame\\client\nclient_net_version={config_parameter id=\"client_net_version\"}\nchat_server_port=2005\ndatabase_type={config_parameter id=\"database_type\"}\nsqlite_database_path=C:\\darkflame\\resServer\\dlu.sqlite\nskip_account_creation={config_parameter id=\"skip_account_creation\"}\n"
+          "content": "# Darkflame Universe shared config managed by the GSA wrapper.\nlog_to_console={config_parameter id=\"log_to_console\"}\nlog_debug_statements=0\nexternal_ip={config_parameter id=\"external_ip\"}\ndont_generate_dcf=0\nmax_clients={gameserver.slot_limit}\ndump_folder=C:\\darkflame\\dump\nclient_location=C:\\darkflame\\client\nclient_net_version={config_parameter id=\"client_net_version\"}\nchat_server_port={gameserver.raw_port}\ndatabase_type={config_parameter id=\"database_type\"}\nsqlite_database_path=C:\\darkflame\\resServer\\dlu.sqlite\nskip_account_creation={config_parameter id=\"skip_account_creation\"}\n"
         },
         "authconfig.ini": {
           "path": "\\configs\\authconfig.ini",
           "info": "Authentication server config. Keep the default auth port unless you have also customized client-side connection behavior.",
           "disable_edit": "0",
-          "content": "external_ip={config_parameter id=\"external_ip\"}\n"
+          "content": "external_ip={config_parameter id=\"external_ip\"}\nauth_server_port={gameserver.game_port}\ndont_use_keys={config_parameter id=\"dont_use_keys\"}\nrewardcodes={config_parameter id=\"rewardcodes\"}\n"
         },
         "chatconfig.ini": {
           "path": "\\configs\\chatconfig.ini",
           "info": "Chat server config. The default chat port used by the wrapper is 2005/udp.",
           "disable_edit": "0",
-          "content": "external_ip={config_parameter id=\"external_ip\"}\n"
+          "content": "external_ip={config_parameter id=\"external_ip\"}\nweb_server_enabled={config_parameter id=\"chat_web_server_enabled\"}\nweb_server_listen_port={gameserver.raw_port}\n"
         },
         "masterconfig.ini": {
           "path": "\\configs\\masterconfig.ini",
           "info": "Master server config. The wrapper runs MasterServer.exe and lets Darkflame spawn the child services.",
           "disable_edit": "0",
-          "content": "external_ip={config_parameter id=\"external_ip\"}\n"
+          "content": "master_ip={config_parameter id=\"master_ip\"}\nmaster_server_port={config_parameter id=\"master_server_port\"}\nworld_port_start={gameserver.query_port}\nprestart_servers={config_parameter id=\"prestart_servers\"}\n"
         },
         "worldconfig.ini": {
           "path": "\\configs\\worldconfig.ini",
-          "info": "World server config. World instances use the fixed 3000-3300 UDP range by default.",
+          "info": "World server config. The wrapper writes GSA's assigned query port as Darkflame world_port_start.",
           "disable_edit": "0",
           "content": ""
         }
@@ -153,6 +166,76 @@
           "section": "Logging",
           "type": "array",
           "dropdown": "{\"Enabled\":\"1\",\"Disabled\":\"0\"}"
+        },
+        "master_ip": {
+          "name": "Master IP",
+          "info": "Internal master server IP. Keep localhost for the all-in-one container.",
+          "section": "Darkflame Core",
+          "type": "text",
+          "content": "localhost"
+        },
+        "master_server_port": {
+          "name": "Master Server Port",
+          "info": "Internal Darkflame master server port. This is not normally exposed publicly.",
+          "section": "Darkflame Core",
+          "type": "text",
+          "content": "2000"
+        },
+        "prestart_servers": {
+          "name": "Prestart Servers",
+          "info": "Autostart auth, chat, and character services when MasterServer starts.",
+          "section": "Darkflame Core",
+          "type": "array",
+          "dropdown": "{\"Enabled\":\"1\",\"Disabled\":\"0\"}"
+        },
+        "dont_use_keys": {
+          "name": "Ignore Play Keys",
+          "info": "Allows accounts to log in without LEGO Universe play keys. Recommended for test servers.",
+          "section": "Accounts",
+          "type": "array",
+          "dropdown": "{\"Enabled\":\"1\",\"Disabled\":\"0\"}"
+        },
+        "rewardcodes": {
+          "name": "Default Reward Codes",
+          "info": "Reward codes applied to accounts by default. Upstream defaults are 4,30.",
+          "section": "Accounts",
+          "type": "text",
+          "content": "4,30"
+        },
+        "chat_web_server_enabled": {
+          "name": "Chat Web Server",
+          "info": "Darkflame chat web server toggle. Keep disabled for the normal game server.",
+          "section": "Network",
+          "type": "array",
+          "dropdown": "{\"Disabled\":\"0\",\"Enabled\":\"1\"}"
+        },
+        "mysql_host": {
+          "name": "MariaDB Host",
+          "info": "Only used when Database Type is MariaDB.",
+          "section": "Database",
+          "type": "text",
+          "content": "localhost"
+        },
+        "mysql_database": {
+          "name": "MariaDB Database",
+          "info": "Only used when Database Type is MariaDB.",
+          "section": "Database",
+          "type": "text",
+          "content": "darkflame"
+        },
+        "mysql_username": {
+          "name": "MariaDB Username",
+          "info": "Only used when Database Type is MariaDB.",
+          "section": "Database",
+          "type": "text",
+          "content": "darkflame"
+        },
+        "mysql_password": {
+          "name": "MariaDB Password",
+          "info": "Only used when Database Type is MariaDB.",
+          "section": "Database",
+          "type": "text",
+          "content": ""
         }
       }
     }
