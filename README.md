@@ -11,7 +11,7 @@ Darkflame Universe is an open-source LEGO Universe server emulator. This project
 - Project type: unofficial community hosting integration
 - Host operating system: Windows Server 2022 with Windows containers
 - Primary image: `ghcr.io/twistedbobross/darkflame-windows-gsa-compatible:server-2022`
-- Raw blueprint: [darkflame-windows-gsa-compatible.json](https://raw.githubusercontent.com/TwistedBobRoss/DarkFlame-Windows-GSA-Compatible/main/blueprints/darkflame-windows-gsa-compatible.json)
+- Raw blueprint: [gsa-blueprint.json](https://raw.githubusercontent.com/TwistedBobRoss/DarkFlame-Windows-GSA-Compatible/main/gsa-blueprint.json)
 - Release notes: [CHANGELOG.md](CHANGELOG.md)
 
 Darkflame Universe is AGPL-3.0 software. This repository does not include LEGO Universe client files, game assets, or LEGO trademarks.
@@ -42,7 +42,7 @@ Darkflame Universe does not distribute LEGO Universe client files. Upload your o
 Manual import path:
 
 ```text
-https://raw.githubusercontent.com/TwistedBobRoss/DarkFlame-Windows-GSA-Compatible/main/blueprints/darkflame-windows-gsa-compatible.json
+https://raw.githubusercontent.com/TwistedBobRoss/DarkFlame-Windows-GSA-Compatible/main/gsa-blueprint.json
 ```
 
 Alternative custom Docker import command:
@@ -83,9 +83,9 @@ Darkflame Universe uses fixed LEGO Universe ports:
 | --- | --- | ---: |
 | Auth/login | UDP | `1001` |
 | Chat | UDP | `2005` |
-| World instances | UDP | `3000-3300` |
+| World start | UDP | GSA `query` port, base `3000` |
 
-This is different from many modern dedicated servers where GSA can safely allocate a few individual dynamic ports. Treat this blueprint as one Darkflame Universe server per public IP unless you also customize the client and Darkflame configs.
+The blueprint enables GSA automatic port assignment. Darkflame increments world ports from `world_port_start`; this GSA blueprint maps the startup world port and writes the assigned values into the Darkflame INI files on container startup.
 
 ## Persistent Storage
 
@@ -122,7 +122,7 @@ Back up `\configs` and `\resServer`. Do not wipe `\client` unless you are reinst
 
 ## Configuration
 
-GSA exposes a small first-pass parameter set:
+GSA exposes the startup-critical Darkflame settings:
 
 | Parameter | Default | Purpose |
 | --- | --- | --- |
@@ -131,6 +131,16 @@ GSA exposes a small first-pass parameter set:
 | Database Type | `sqlite` | Self-contained default. |
 | Skip Interactive Account Check | `1` | Required for non-interactive startup. |
 | Log To Console | `1` | Mirrors logs into Docker/GSA logs. |
+| Master IP | `localhost` | Internal all-in-one master server address. |
+| Master Server Port | `2000` | Internal master server port. |
+| Prestart Servers | `1` | Starts the child services automatically. |
+| Ignore Play Keys | `1` | Allows test accounts without LU play keys. |
+| Default Reward Codes | `4,30` | Upstream default account reward codes. |
+| Chat Web Server | `0` | Keeps the optional chat web server disabled. |
+| MariaDB Host | `localhost` | Used only when MariaDB is selected. |
+| MariaDB Database | `darkflame` | Used only when MariaDB is selected. |
+| MariaDB Username | `darkflame` | Used only when MariaDB is selected. |
+| MariaDB Password | empty | Used only when MariaDB is selected. |
 
 Use `171023` only for a Darkflame Universe client build that expects that network version.
 
@@ -181,7 +191,7 @@ docker run -d --name darkflame-test `
 ### Players Cannot Connect
 
 - Confirm `EXTERNAL_IP` is reachable by the players.
-- Confirm UDP `1001`, `2005`, and `3000-3300` are reachable.
+- Confirm GSA assigned and opened the `game`, `raw`, and `query` UDP ports.
 - Confirm the client `boot.cfg` points to your server IP and disables LEGO's old UGC 3D services setting.
 - Confirm the client network version matches `CLIENT_NET_VERSION`.
 
