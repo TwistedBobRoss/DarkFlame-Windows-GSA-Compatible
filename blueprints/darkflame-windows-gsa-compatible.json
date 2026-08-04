@@ -126,9 +126,9 @@
         },
         "worldconfig.ini": {
           "path": "\\configs\\worldconfig.ini",
-          "info": "World server config. The wrapper writes GSA's assigned query port as Darkflame world_port_start.",
+          "info": "World gameplay settings seeded from upstream Darkflame defaults.",
           "disable_edit": "0",
-          "content": ""
+          "content": "source=https://github.com/DarkflameUniverse/DarkflameServer\ndisable_chat=0\nphys_spatial_partitioning=1\nphys_sp_tilesize=102\nphys_sp_tilecount=24\ndisable_extra_backpack=0\ndisable_vanity=0\nsolo_racing=0\ndisable_anti_speedhack=0\ncheck_fdb=0\nclassic_survival_scoring=0\npets_take_imagination=1\ndisable_drops=0\nhardcore_mode=0\nhardcore_dropinventory_on_death=1\nhardcore_uscore_enemies_multiplier=2\nhardcore_lose_uscore_on_death_percent=10\nallow_nameplate_off=0\nlog_ip_addresses_for_anti_cheat=1\nhelp_0_summary=Got an issue?\nhelp_1_summary=Stuck loading?\nhelp_2_summary=Missing features?\nhelp_3_summary=Get smashed?\nhelp_4_summary=Want to contribute?\nhelp_0_description=Go to the DarkflameServer repository on GitHub to view issues and discussions about the server emulator!<br/><br/><a href=\"https://github.com/DarkflameUniverse/DarkflameServer\"><font color=\"#0000EE\">Click Here to go there!</font></a><br/><br/>\nhelp_1_description=Try switching networks, using a VPN, or using your phone's hotspot to resolve the issue.<br/><br/>\nhelp_2_description=While DarkflameServer is a mostly complete emulator, there are still some features that aren't implemented. You can track these on the GitHub issues page.<br/><br/>\nhelp_3_description=Skill issue!<br/><br/>\nhelp_4_description=Visit Discussions on the DarkflameServer GitHub page<br/>to ask questions and collaborate with other devs!<br/><br/>\nallow_players_to_skip_cinematics=0\ncdclient_mismatch_title=Version out of date\ncdclient_mismatch_message=We detected that your client is out of date. Please update your client to the latest version.\nauto_reject_empty_properties=0\nhardcore_excluded_item_drops=6086,7044\nhardcore_uscore_reduction=\nhardcore_uscore_reduced_worlds=\nhardcore_uscore_reduced_lots=\nhardcore_uscore_excluded_enemies=\nhardcore_disabled_worlds=\nhardcore_coin_keep=\nsave_lxfmls=0\n"
         }
       },
       "parameters": {
