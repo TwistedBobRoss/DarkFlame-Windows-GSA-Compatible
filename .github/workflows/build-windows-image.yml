@@ -22,6 +22,32 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Ensure Docker is running
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $dockerService = Get-Service -Name docker -ErrorAction SilentlyContinue
+          if (-not $dockerService) {
+            throw 'Docker service was not found on this Windows runner.'
+          }
+
+          if ($dockerService.Status -ne 'Running') {
+            Start-Service -Name docker
+          }
+
+          $deadline = (Get-Date).AddMinutes(3)
+          do {
+            docker version
+            if ($LASTEXITCODE -eq 0) {
+              docker info
+              exit 0
+            }
+
+            Start-Sleep -Seconds 5
+          } while ((Get-Date) -lt $deadline)
+
+          throw 'Docker daemon did not become ready on this Windows runner.'
+
       - name: Login to GHCR
         uses: docker/login-action@v3
         with:
