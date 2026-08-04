@@ -104,7 +104,7 @@
           "path": "\\configs\\sharedconfig.ini",
           "info": "Main shared Darkflame Universe settings. The container writes the GSA environment values into this file at startup.",
           "disable_edit": "0",
-          "content": "# Darkflame Universe shared config managed by the GSA wrapper.\nlog_to_console={config_parameter id=\"log_to_console\"}\nlog_debug_statements=0\nexternal_ip={config_parameter id=\"external_ip\"}\ndont_generate_dcf=0\nmax_clients={gameserver.slot_limit}\ndump_folder=C:\\darkflame\\dump\nclient_location=C:\\darkflame\\client\nclient_net_version={config_parameter id=\"client_net_version\"}\nchat_server_port={gameserver.raw_port}\ndatabase_type={config_parameter id=\"database_type\"}\nsqlite_database_path=C:\\darkflame\\resServer\\dlu.sqlite\nskip_account_creation={config_parameter id=\"skip_account_creation\"}\n"
+          "content": "log_to_console={config_parameter id=\"log_to_console\"}\nlog_debug_statements=0\nexternal_ip={config_parameter id=\"external_ip\"}\ndont_generate_dcf=0\nmax_clients={gameserver.slot_limit}\ndump_folder=C:\\darkflame\\dump\nclient_location=C:\\darkflame\\client\nclient_net_version={config_parameter id=\"client_net_version\"}\nchat_server_port={gameserver.raw_port}\ndatabase_type={config_parameter id=\"database_type\"}\nsqlite_database_path=C:\\darkflame\\resServer\\dlu.sqlite\nskip_account_creation={config_parameter id=\"skip_account_creation\"}\n"
         },
         "authconfig.ini": {
           "path": "\\configs\\authconfig.ini",
