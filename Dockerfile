@@ -17,6 +17,16 @@ ENV EXTERNAL_IP=localhost
 ENV CLIENT_NET_VERSION=171022
 ENV SKIP_ACCOUNT_CREATION=1
 ENV LOG_TO_CONSOLE=1
+ENV AUTH_SERVER_PORT=1001
+ENV CHAT_SERVER_PORT=2005
+ENV WORLD_PORT_START=3000
+ENV MASTER_IP=localhost
+ENV MASTER_SERVER_PORT=2000
+ENV PRESTART_SERVERS=1
+ENV DONT_USE_KEYS=1
+ENV REWARDCODES=4,30
+ENV CHAT_WEB_SERVER_ENABLED=0
+ENV MAX_CLIENTS=999
 
 WORKDIR C:\darkflame
 
@@ -39,6 +49,6 @@ RUN $ErrorActionPreference = 'Stop'; `
 COPY Start-Darkflame.ps1 C:\darkflame\Start-Darkflame.ps1
 COPY Create-Admin.ps1 C:\darkflame\Create-Admin.ps1
 
-EXPOSE 1001/udp 2005/udp 3000-3300/udp
+EXPOSE 1001/udp 2005/udp 3000/udp
 
 ENTRYPOINT ["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "C:\\darkflame\\Start-Darkflame.ps1"]
